@@ -1,41 +1,49 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Category = () => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const send = (e) => {
     e.preventDefault();
-    console.log(name);
+
+    if (!name.trim()) {
+      alert("Category name cannot be empty!");
+      return;
+    }
+
     axios
       .post("http://localhost:3001/add", { name })
       .then((result) => {
         console.log(result);
-       
-          navigate('/category')
-        
-        // Optionally, you can navigate to another page after successful submission
-        // navigate('/some-other-route');
+
+        alert("Category added successfully!");
+        navigate("/category");
       })
       .catch((err) => console.log(err));
   };
 
   return (
-    <div>
-      <form onSubmit={send}>
-        <label>Add the wanted category</label>
-        <input
-          type='text'
-          placeholder='enter name'
-          className='form-control w-75 mt-3'
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button type='submit' className='btn btn-success mt-3'>
-          Submit
-        </button>
-      </form>
+    <div className="container d-flex justify-content-center mt-5">
+      <div className="card shadow p-4 w-50">
+        <h3 className="fw-bold text-center mb-4">Add Pending Work</h3>
+
+        <form onSubmit={send}>
+          <label className="fw-semibold">Work Name</label>
+          <input
+            type="text"
+            placeholder="Enter work name"
+            className="form-control mt-2"
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <button type="submit" className="btn btn-success w-100 mt-4 fw-semibold">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

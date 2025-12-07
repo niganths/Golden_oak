@@ -23,6 +23,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="/category" element={<Displaycategory />} />
           <Route path="/cat" element={<Category />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/attendance" element={<AttendanceForm />} />
           <Route path="/history/:employeeId" element={<AttendanceHistory />} />
           <Route path="/employee" element={<Employee />} />

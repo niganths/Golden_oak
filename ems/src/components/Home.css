@@ -21,4 +21,10 @@ span:hover
       display: block; /* Display "NoE" on small screens */
     }
   }
-  
+  .chart-card {
+  transition: 0.3s ease;
+}
+
+.chart-card:hover {
+  transform: scale(1.02);
+}

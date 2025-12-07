@@ -5,6 +5,8 @@ const EmployeeModel = require('./models/Login');
 const UserModel = require('./models/User');
 const AttendanceModel=require('./models/AttendanceModel')
 const AttendanceModell=require('./models/AttendanceModell')
+const AdminModel = require('./models/Admin');
+
 
 const Categorymodel=require('./models/Categorymodel')
 
@@ -32,6 +34,18 @@ app.post('/register', (req, res) => {
     .catch(err => {
       console.error('Error creating employee:', err);
       res.status(500).json({ error: 'Error creating employee' });
+    });
+});
+
+app.post('/admin/register', (req, res) => {
+  AdminModel.create(req.body)
+    .then(admin => {
+      console.log("Admin created:", admin);
+      res.status(201).json(admin);
+    })
+    .catch(err => {
+      console.error("Admin create error:", err);
+      res.status(500).json({ error: "Error creating admin" });
     });
 });
 
@@ -70,6 +84,16 @@ app.get('/getcategory',(req,res)=>{
     });
 })
 
+app.get("/getadmins", async (req, res) => {
+  AdminModel.find({})
+    .then(users=>res.json(users))
+    .catch(err => {
+      console.error('Error creating user:', err);
+      res.status(500).json({ error: 'Error creating user' });
+});
+ });
+
+
 
 
 
@@ -93,16 +117,17 @@ app.get('/getcategory',(req,res)=>{
 app.post('/attendancee', (req, res) => {
   const { employeeId, status } = req.body;
 
-  AttendanceModell.create({ employeeId, status })
-    .then(user => {
-      console.log('New user created:', user);
-      res.status(201).json(user);
-    })
+  // FIX: If status is empty, make it 'present'
+  const finalStatus = status && status.trim() !== "" ? status : "present";
+
+  AttendanceModell.create({ employeeId, status: finalStatus })
+    .then(user => res.status(201).json(user))
     .catch(err => {
-      console.error('Error creating user:', err);
-      res.status(500).json({ error: 'Error creating user' });
+      console.error('Error creating attendance:', err);
+      res.status(500).json({ error: 'Error creating attendance' });
     });
 });
+
 
 
 
@@ -197,15 +222,18 @@ app.get('/employeeCount', (req, res) => {
 });
 
 app.get('/adminCount', (req, res) => {
-  EmployeeModel.countDocuments()
-    .then(employeeCount => {
-      res.json({ count: employeeCount });
+  AdminModel.countDocuments()
+    .then(adminCount => {
+      res.json({ count: adminCount });
     })
     .catch(error => {
-      console.error('Error fetching employee count:', error);
-      res.status(500).json({ error: 'Error fetching employee count' });
+      console.error('Error fetching admin count:', error);
+      res.status(500).json({ error: 'Error fetching admin count' });
     });
 });
+
+// GET main admin profile
+
 
 
 
@@ -245,6 +273,29 @@ app.post('/login',(req,res)=>{
     }
     })
 })
+
+app.post('/admin/login', (req, res) => {
+  const { email, password } = req.body;
+
+  AdminModel.findOne({ email })
+    .then(admin => {
+      if (admin) {
+        if (admin.password === password) {
+          res.json({ message: "Admin Login Success", role: "admin" });
+        } else {
+          res.json({ message: "Incorrect Password" });
+        }
+      } else {
+        res.json({ message: "No admin found" });
+      }
+    })
+    .catch(err => {
+      console.error("Admin login error:", err);
+      res.status(500).json({ error: "Error logging in admin" });
+    });
+});
+
+
 app.delete('/deleteUser/:id', (req, res) => {
   const id = req.params.id;
   UserModel.findByIdAndDelete({ _id: id })

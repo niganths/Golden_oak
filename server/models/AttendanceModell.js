@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 // Define the schema for the attendance records
 const AttendanceSchemaa = new mongoose.Schema({
     employeeId: String,
-    status: String,
+    status: { type: String, default: "present" },  
     attendanceDate: { type: Date, default: Date.now }
-
 });
+
 
 // Create the Mongoose model using the schema
 const AttendanceModell = mongoose.model("attend", AttendanceSchemaa);
