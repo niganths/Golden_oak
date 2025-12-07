@@ -1,4 +1,4 @@
-Developed as a consultancy project for Mathi Technologies..
+Developed as a consultancy project for Golden_oak..
 
 It consists of dashboard, attendance page, manage products and manage employees 
 
